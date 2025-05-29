@@ -319,7 +319,7 @@ watch(() => props.isAdd, (newVal) => {
           <div class="card-title">{{ resolveType() }}</div>
           <div class="carousel-container">
             <img
-                :src="previewUrls[currentIndex] ? previewUrls[currentIndex] : '/assets/add.png'"
+                :src="previewUrls[currentIndex] ? previewUrls[currentIndex] : '/assets/articleDefault.png'"
                 alt="Producto"
             />
             <button class="carousel-btn prev" @click="prevImage" v-if="previewUrls.length > 1">

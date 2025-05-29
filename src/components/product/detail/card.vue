@@ -29,7 +29,10 @@ watch(() => props.data, () => {
 
     <div class="card-image">
       <div class="card-title"> {{ item.tipos.nombre }}</div>
-      <img :src="item.imagenes_producto[0].url_imagen" alt="Producto" />
+      <img
+          :src="item.imagenes_producto[0]?.url_imagen ? item.imagenes_producto[0].url_imagen : '/assets/articleDefault.png'"
+          alt="Producto"
+      />
     </div>
     <div class="card-info">
       <div class="info-row-title">
