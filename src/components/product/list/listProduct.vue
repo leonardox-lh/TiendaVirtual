@@ -173,7 +173,9 @@ watch(typeSelect, async () => {
   transform: scale(1.1);
 }
 .btnProduct{
+  width: 220px;
   display: flex;
+  justify-content: space-around;
 }
 .cont_search{
   display: flex;
@@ -200,7 +202,7 @@ watch(typeSelect, async () => {
     padding: 10px;
   }
   .btnProduct{
-    width: 90%;
+    width: 150px;
     flex-direction: column;
     gap: 0.5rem;
   }

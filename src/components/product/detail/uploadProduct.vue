@@ -342,8 +342,8 @@ watch(() => props.isAdd, (newVal) => {
 
 <!--  Detail  -->
 
+    <h3 style="margin: 0 10px">Detalle</h3>
     <div class="cont-detail">
-      <h3 style="margin: 0 10px">Detalle</h3>
       <div class="const-detail-fist">
         <div class="detail_product">
           <span class="title_detail_product"> Título: </span>
@@ -393,6 +393,7 @@ watch(() => props.isAdd, (newVal) => {
           <span v-else>{{ resolveType() }}</span>
         </div>
       </div>
+      <div v-if="isView" class="line line-end"></div>
       <div class="const-detail-fist">
         <div class="description">
           <span class="title_detail_product"> Descripción: </span>
@@ -577,9 +578,13 @@ button {
   resize: none;
 }
 
+.line-end{
+  display: none;
+}
 @media (max-width: 1050px) {
   .form-container {
-    max-width: 100%;
+    width: 90%;
+    max-width: 350px;
     margin-top: 5px;
   }
   .cont-images{
@@ -604,7 +609,7 @@ button {
   }
 
   .cont-detail{
-    width: 90%;
+    width: 100%;
     flex-direction: column;
     margin: 0 auto;
   }
@@ -615,12 +620,15 @@ button {
     width: 97.5%;
   }
   .cont-mini-image{
-    width: 90%;
-    margin: 0 auto;
+    width: 100%;
+    margin: 30px auto;
   }
   .mini-images{
     width: 152px;
     height: 130px;
+  }
+  .line-end{
+    display: block;
   }
 }
 </style>
