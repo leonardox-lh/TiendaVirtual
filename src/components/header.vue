@@ -57,7 +57,7 @@ const toggleMenu = () => {
     <a
         v-if="empresa.telefono"
         class="whatsapp"
-        :href="`https://wa.me/${empresa.telefono}`"
+        :href="`https://wa.me/966010314`"
         target="_blank"
         rel="noopener"
     >
