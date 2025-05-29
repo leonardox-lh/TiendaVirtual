@@ -1,7 +1,7 @@
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  --color-primary: #575757;
-  --color-secondary: rgb(138, 138, 138);
+  --color-primary: #5783ff;
+  --color-secondary: rgb(162, 187, 250);
   --color-backgronund: #f8f8f8;
   --color-header: #efefef;
   --color-text: #333333;
@@ -52,8 +52,13 @@ button {
 button:hover {
   border-color: var(--color-primary);
   background-color: var(--color-primary);
+
     color: var(--color-text);
-  transition: background-color 0.25s;
+}
+
+button:focus,
+button:focus-visible {
+  outline: none;
 }
 
 .btn {
@@ -74,12 +79,12 @@ button:hover {
   width: 100%;
   padding: 0.5rem;
   font-size: 1em;
-  font-weight: 500;
+  font-weight: 400;
   font-family: inherit;
   border-radius: 8px;
   border: 1px solid var(--color-secondary);
   box-sizing: border-box;
-  background-color: var(--color-backgronund);
+  background-color: var(--color-header);
   color: var(--color-text);
   transition: border-color 0.25s;
   text-align: start;
@@ -93,15 +98,12 @@ button:hover {
 
 input:focus,
 input:focus-visible {
-  border-color: var(--color-secondary);
+  border: 1px solid var(--color-primary) !important;
   outline: none;
 }
 
 
-button:focus,
-button:focus-visible {
-  outline: none;
-}
+
 
 .card {
   padding: 2em;

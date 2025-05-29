@@ -139,6 +139,19 @@ const guardarEmpresa = async () => {
       <div class="card">
         <h2>Configuración</h2>
 
+        <div style="display: flex; align-items: center; justify-content: center">
+
+          <div v-if="items.logo_url || logoUrl" style="margin: 20px">
+            <img :src="items.logo_url || logoUrl" alt="Logo" width="150" />
+          </div>
+          <div style="display: inline-block; margin: 25px" >
+            <label class="btn">
+              <Icon icon="mdi:upload" />
+              Subir logo
+              <input type="file" @change="handleLogoChange" hidden />
+            </label>
+          </div>
+        </div>
         <div class="detail_product">
           <div class="title_detail_product"> Título: </div>
           <input
@@ -167,18 +180,6 @@ const guardarEmpresa = async () => {
               @input="handleStockInput"
               maxlength="9"
           />
-        </div>
-        <div style="display: flex; align-items: center; justify-content: center; flex-direction: column">
-          <div style="display: inline-block; margin: 25px" >
-            <label class="btn">
-              <Icon style="font-size: 20px" icon="mdi:upload" />
-              Subir logo
-              <input type="file" @change="handleLogoChange" hidden />
-            </label>
-          </div>
-          <div v-if="items.logo_url || logoUrl" style="margin: 20px">
-            <img :src="items.logo_url || logoUrl" alt="Logo" width="150" />
-          </div>
         </div>
 
         <button class="btn_save" @click="guardarEmpresa">Guardar</button>
@@ -250,7 +251,18 @@ const guardarEmpresa = async () => {
 }
 
 .btn-logout{
+  background-color: var(--color-error);
+}
 
+.btn-logout:hover {
+  background-color: #ff3b3b;
+}
+
+.btn{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
 }
 
 @media (max-width: 1050px) {
