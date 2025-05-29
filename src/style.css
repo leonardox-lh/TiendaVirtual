@@ -1,0 +1,123 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --color-primary: #575757;
+  --color-secondary: rgb(138, 138, 138);
+  --color-backgronund: #f8f8f8;
+  --color-header: #efefef;
+  --color-text: #333333;
+  --color-error: #ff4d4d;
+  --color-error-background: #fc9191;
+}
+
+a {
+  font-weight: 500;
+  color: var(--color-primary) !important;
+  text-decoration: none;
+}
+a:hover {
+  color: var(--color-secondary) !important;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--color-backgronund);
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 5px;
+  border: 1px solid transparent;
+  padding: 6px 10px !important;
+  margin: 5px;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: inherit;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-secondary);
+  cursor: pointer;
+  transition: border-color 1s;
+}
+
+button:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+    color: var(--color-text);
+  transition: background-color 0.25s;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20vh;
+  background-color: var(--color-secondary) !important;
+  color: var(--color-text) !important;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid var(--color-secondary);
+  box-sizing: border-box;
+  background-color: var(--color-backgronund);
+  color: var(--color-text);
+  transition: border-color 0.25s;
+  text-align: start;
+}
+
+.line {
+  border-bottom: 1px solid #5e5e5e;
+  margin: 4px 0;
+}
+
+
+input:focus,
+input:focus-visible {
+  border-color: var(--color-secondary);
+  outline: none;
+}
+
+
+button:focus,
+button:focus-visible {
+  outline: none;
+}
+
+.card {
+  padding: 2em;
+}
+
+#app {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 600px) {
+  button {
+    padding: 5px 8px !important;
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 450;
+  }
+}
