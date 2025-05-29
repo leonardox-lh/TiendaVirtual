@@ -1,11 +1,14 @@
 <script setup>
 import Header from "./components/header.vue";
 import Toast from "./components/toast.vue";
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 </script>
 
 <template>
   <div class="body-project">
-    <Header />
+    <Header v-if="route.path !== '/login'"/>
     <router-view></router-view>
     <Toast />
   </div>

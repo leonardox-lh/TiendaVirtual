@@ -39,6 +39,7 @@ const toggleMenu = () => {
       <router-link class="item_nav" to="/list">Listar Productos</router-link> |
       <router-link class="item_nav" v-if="auth.user" to="/add">Agregar Producto</router-link> |
       <router-link class="item_nav" v-if="auth.user" to="/user">Mi Cuenta</router-link>
+      <router-link class="item_nav" v-if="!auth.user" to="/login">Iniciar Sesión</router-link>
     </nav>
 
     <!-- Menú hamburguesa para móviles -->
