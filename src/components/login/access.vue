@@ -91,7 +91,7 @@ button {
 }
 
 button:hover {
-  background-color: #333; /* oscuro suave */
+  background-color: #333;
 }
 
 .error-text {
@@ -99,6 +99,15 @@ button:hover {
   color: red;
   font-weight: 500;
   font-size: 0.95rem;
+}
+
+@media (max-width: 600px) {
+  button {
+    margin: 5px 0 !important;
+  }
+  .card {
+    max-width: 250px;
+  }
 }
 </style>
 
