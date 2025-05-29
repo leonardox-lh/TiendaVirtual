@@ -199,7 +199,7 @@ const guardarEmpresa = async () => {
           </tbody>
         </table>
 
-        <div style="margin-top: 0.2rem; margin-bottom: 5rem; display: flex; gap: 0.5rem;">
+        <div style=" margin-bottom: 1rem; display: flex; gap: 0.5rem;">
           <input
               type="text"
               v-model="nuevoTipo"
@@ -274,6 +274,10 @@ const guardarEmpresa = async () => {
   .card {
     width: 85%;
     padding: 0;
+  }
+
+  .btn-logout{
+    margin-bottom: 60px;
   }
 }
 </style>

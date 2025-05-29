@@ -16,7 +16,7 @@ const route = useRoute()
 
 <style scoped>
 .body-project{
-  height: 100vh;
+  min-height: 98vh;
 }
 
 router-link {

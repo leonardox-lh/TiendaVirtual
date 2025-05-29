@@ -141,10 +141,6 @@ const registrarProducto = async () => {
     toast.warning('El precio y el stock deben ser mayores o iguales a 0.')
     return
   }
-  if (previewUrls.value.length === 0) {
-    toast.warning('Ingresar una imagen por lo menos.')
-    return
-  }
 
   try {
     loading.value = true
