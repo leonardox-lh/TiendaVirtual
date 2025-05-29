@@ -33,6 +33,16 @@ onMounted(async () => {
   loading.value = false
 })
 
+const handleStockInput = (e) => {
+  const value = e.target.value
+
+  if (/^\d*$/.test(value)) {
+    items.value.telefono = value === '' ? null : parseInt(value)
+  } else {
+    e.target.value = items.value.telefono ?? ''
+  }
+}
+
 const logout = async () => {
   try {
     loading.value = true
@@ -150,9 +160,12 @@ const guardarEmpresa = async () => {
           <div class="title_detail_product"> Teléfono: </div>
           <input
               type="text"
-              v-model="items.telefono"
-              placeholder="Teléfono (WhatsApp)"
+              :value="items.telefono"
+              placeholder="WhatsApp"
               class="input"
+              inputmode="numeric"
+              @input="handleStockInput"
+              maxlength="9"
           />
         </div>
         <div style="display: flex; align-items: center; justify-content: center; flex-direction: column">

@@ -5,6 +5,7 @@ import {useRoute, useRouter} from 'vue-router'
 import { useUserStore } from '../../../stores/userStore.js'
 import {useToastStore} from "../../../stores/toast.js";
 import LoadingPage from "../../loadingPage.vue";
+import { validatePrecio, validateStock } from '../../../validators/validatorInput.js'
 
 const router = useRouter()
 const store = useUserStore()
@@ -49,6 +50,25 @@ const props = defineProps({
     required: false,
   },
 })
+
+const handlePrecioInput = (e) => {
+  const result = validatePrecio(e.target.value)
+  if (result !== null) {
+    product.value.precio = result
+  } else {
+    e.target.value = product.value.precio ?? ''
+  }
+}
+
+const handleStockInput = (e) => {
+  const value = e.target.value
+
+  if (/^\d*$/.test(value)) {
+    product.value.stock = value === '' ? null : parseInt(value)
+  } else {
+    e.target.value = product.value.stock ?? ''
+  }
+}
 
 const emit = defineEmits(['update:Product'])
 
@@ -361,9 +381,12 @@ watch(() => props.isAdd, (newVal) => {
           <span class="title_detail_product"> Precio: </span>
           <input
               v-if="!isView"
-              v-model.number="product.precio"
+              :value="product.precio"
+              @input="handlePrecioInput"
+              inputmode="numeric"
               class="input input_detail"
               placeholder="Precio"
+              maxlength="7"
           />
           <span v-else>{{ "S/." + Number(product?.precio).toFixed(2) }}</span>
         </div>
@@ -372,9 +395,12 @@ watch(() => props.isAdd, (newVal) => {
           <span class="title_detail_product"> Stock: </span>
           <input
               v-if="!isView"
-              v-model.number="product.stock"
+              :value="product.stock"
+              @input="handleStockInput"
+              inputmode="numeric"
               class="input input_detail"
               placeholder="Stock"
+              maxlength="4"
           />
           <span v-else>{{ product?.stock + 'u.' }}</span>
         </div>
