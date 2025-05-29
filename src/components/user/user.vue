@@ -3,6 +3,8 @@ import { ref, onMounted } from 'vue'
 import { useUserStore } from '../../stores/userStore.js'
 import {useToastStore} from "../../stores/toast.js";
 import LoadingPage from "../loadingPage.vue";
+import {useAuthStore} from "../../stores/authStore.js";
+import {useRouter} from "vue-router";
 
 const CLOUD_NAME = 'dthhndiit'
 const UPLOAD_PRESET = 'tiendaVirtual'
@@ -12,6 +14,8 @@ const logoFile = ref(null)
 const loading = ref(false)
 const logoUrl = ref('')
 
+const router = useRouter()
+const auth = useAuthStore()
 const tipos = ref([])
 const nuevoTipo = ref('')
 const items = ref({})
@@ -28,6 +32,21 @@ onMounted(async () => {
   }
   loading.value = false
 })
+
+const logout = async () => {
+  try {
+    loading.value = true
+    await auth.logout()
+    toast.success('Sesión cerrada')
+    await router.push('/list')
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error)
+    toast.error('Error al cerrar sesión')
+  } finally {
+    loading.value = false
+  }
+
+}
 
 const agregarTipo = async () => {
   try {
@@ -175,7 +194,10 @@ const guardarEmpresa = async () => {
           />
           <button @click="agregarTipo">Agregar</button>
         </div>
+        <button class="btn-logout" v-if="auth.user" @click="logout">Cerrar sesión</button>
+
       </div>
+
     </div>
     <LoadingPage v-model:visible="loading" />
   </section>
@@ -212,6 +234,10 @@ const guardarEmpresa = async () => {
 .btn_save{
   width: 120px;
   margin: 0 auto;
+}
+
+.btn-logout{
+
 }
 
 @media (max-width: 1050px) {

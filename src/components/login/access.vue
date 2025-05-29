@@ -33,6 +33,7 @@ const handleLogin = async () => {
       <input v-model="password" class="input" type="password" placeholder="Contraseña" />
       <button @click="handleLogin">Iniciar sesión</button>
       <p v-if="error" class="error-text">{{ error }}</p>
+      <button @click="router.push({path: '/list'})">Continuar como invitado</button>
     </div>
   </div>
 </template>
@@ -44,7 +45,6 @@ const handleLogin = async () => {
   align-items: center;
   height: 100vh;
   background-color: var(--color-header);
-  padding: 1rem;
 }
 
 .card {
