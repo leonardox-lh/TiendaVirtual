@@ -106,7 +106,7 @@ const guardarEmpresa = async () => {
 
 <template>
   <section>
-    <div style="display: flex; align-items: start; justify-content: center">
+    <div class="cont-detail">
       <div class="card">
         <h2>Configuración</h2>
 
@@ -166,7 +166,7 @@ const guardarEmpresa = async () => {
           </tbody>
         </table>
 
-        <div style="margin-top: 0.2rem; display: flex; gap: 0.5rem;">
+        <div style="margin-top: 0.2rem; margin-bottom: 5rem; display: flex; gap: 0.5rem;">
           <input
               type="text"
               v-model="nuevoTipo"
@@ -182,6 +182,12 @@ const guardarEmpresa = async () => {
 </template>
 
 <style scoped>
+.cont-detail {
+  display: flex;
+  align-items: start;
+  justify-content: center;
+}
+
 .card {
   width: 400px;
   display: flex;
@@ -206,5 +212,17 @@ const guardarEmpresa = async () => {
 .btn_save{
   width: 120px;
   margin: 0 auto;
+}
+
+@media (max-width: 1050px) {
+  .cont-detail{
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card {
+    width: 85%;
+    padding: 0;
+  }
 }
 </style>
