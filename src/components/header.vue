@@ -51,6 +51,7 @@ const toggleMenu = () => {
       <router-link to="/list" @click="toggleMenu">Listar Productos</router-link>
       <router-link v-if="auth.user" to="/add" @click="toggleMenu">Agregar Producto</router-link>
       <router-link v-if="auth.user" to="/user" @click="toggleMenu">Mi Cuenta</router-link>
+      <router-link v-if="!auth.user" to="/user" @click="toggleMenu">Iniciar Sesión</router-link>
     </div>
 
     <a
