@@ -116,10 +116,10 @@ watch(typeSelect, async () => {
             />
 
             <div class="btnProduct">
-              <button v-if="auth.user" @click="deleteProduct(product.id)" >
+              <button v-if="auth.user" @click="deleteProduct(product.id)" class="btn-outline">
                 <Icon icon="mdi:delete-outline" /> Eliminar
               </button>
-              <button v-if="auth.user" @click="editProduct(product.id)">
+              <button v-if="auth.user" @click="editProduct(product.id)" class="btn-outline">
                 <Icon icon="mdi:pencil" /> Editar
               </button>
             </div>

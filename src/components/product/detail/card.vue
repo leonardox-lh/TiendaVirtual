@@ -43,11 +43,6 @@ watch(() => props.data, () => {
         <div class="label"><Icon icon="mdi:cash" />Precio</div>
         <div class="value">{{ "S/" + Number(item.precio).toFixed(2) }} </div>
       </div>
-      <div class="line"></div>
-      <div class="info-row">
-        <span class="label"> <Icon icon="mdi:warehouse" /> Stock</span>
-        <span class="value">{{ item.stock + "u."}}</span>
-      </div>
     </div>
   </div>
 </template>

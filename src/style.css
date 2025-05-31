@@ -49,11 +49,21 @@ button {
   transition: border-color 1s;
 }
 
-button:hover {
+.btn-outline {
+  background-color: transparent !important;
+  color: var(--color-primary) !important;
+  border: 2px solid var(--color-primary) !important;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background-color: var(--color-primary) !important;
+  color: var(--color-text) !important;
+}
+
+button:hover:not(:disabled) {
   border-color: var(--color-primary);
   background-color: var(--color-primary);
-
-    color: var(--color-text);
+  color: var(--color-text);
 }
 
 button:focus,
@@ -66,8 +76,8 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   width: 20vh;
-  background-color: var(--color-secondary) !important;
-  color: var(--color-text) !important;
+  background-color: var(--color-secondary);
+  color: var(--color-text);
   padding: 10px 16px;
   border-radius: 8px;
   font-size: 14px;

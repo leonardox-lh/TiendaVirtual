@@ -6,7 +6,9 @@ import { useUserStore } from '../../../stores/userStore.js'
 import {useToastStore} from "../../../stores/toast.js";
 import LoadingPage from "../../loadingPage.vue";
 import { validatePrecio, validateStock } from '../../../validators/validatorInput.js'
+import ColorList from "../../colorList.vue";
 
+const newColor = ref('#000000')
 const router = useRouter()
 const store = useUserStore()
 const CLOUD_NAME = 'dthhndiit'
@@ -17,7 +19,7 @@ const productDefault = ref({
   nombre: '',
   descripcion: '',
   precio: null,
-  stock: null,
+  colores: [],
   tipo_id: null,
   imagenes_producto: [],
 })
@@ -27,7 +29,7 @@ const product = ref({
   nombre: '',
   descripcion: '',
   precio: null,
-  stock: null,
+  colores: [],
   tipo_id: null,
   imagenes_producto: [],
 })
@@ -60,14 +62,24 @@ const handlePrecioInput = (e) => {
   }
 }
 
-const handleStockInput = (e) => {
-  const value = e.target.value
-
-  if (/^\d*$/.test(value)) {
-    product.value.stock = value === '' ? null : parseInt(value)
+const addColor = () => {
+  const color = newColor.value
+  if (!product.value.colores.includes(color) && product.value.colores.length < 3) {
+    product.value.colores.push(color)
+  } else if (product.value.colores.includes(color)) {
+    toast.warning('Este color ya fue agregado.')
   } else {
-    e.target.value = product.value.stock ?? ''
+    toast.warning('Solo puedes agregar hasta 3 colores.')
   }
+}
+
+const removeColor = (index) => {
+  product.value.colores.splice(index, 1)
+}
+
+
+const handleColorSelect = (items) => {
+  product.value.colores = items
 }
 
 const emit = defineEmits(['update:Product'])
@@ -133,7 +145,7 @@ const registrarProducto = async () => {
     toast.warning('Por favor selecciona un tipo.')
     return
   }
-  if (!product.value.nombre || !product.value.descripcion || product.value.precio == null || product.value.stock == null) {
+  if (!product.value.nombre || !product.value.descripcion || product.value.precio == null) {
     toast.warning('Por favor completa todos los campos.')
     return
   }
@@ -157,7 +169,7 @@ const registrarProducto = async () => {
             nombre: product.value.nombre,
             descripcion: product.value.descripcion,
             precio: product.value.precio,
-            stock: product.value.stock,
+            colores: product.value.colores,
             tipo_id: product.value.tipo_id,
           })
           .eq('id', productoId)
@@ -179,7 +191,7 @@ const registrarProducto = async () => {
             nombre: product.value.nombre,
             descripcion: product.value.descripcion,
             precio: product.value.precio,
-            stock: product.value.stock,
+            colores: product.value.colores.length > 0 ? product.value.colores : [],
             tipo_id: product.value.tipo_id,
           }])
           .select()
@@ -327,7 +339,7 @@ watch(() => props.isAdd, (newVal) => {
           </div>
         </div>
         <div v-if="!isView" style="display: inline-block; margin: 18px 5px" >
-          <label class="btn">
+          <label class="btn btn-outline" >
             <Icon style="font-size: 20px" icon="mdi:upload" />
             Subir imágenes
             <input type="file" @change="handleFileChange" multiple hidden />
@@ -384,21 +396,61 @@ watch(() => props.isAdd, (newVal) => {
               placeholder="Precio"
               maxlength="7"
           />
-          <span v-else>{{ "S/." + Number(product?.precio).toFixed(2) }}</span>
+          <span v-else>{{ "S/" + Number(product?.precio).toFixed(2) }}</span>
         </div>
         <div v-if="isView" class="line"></div>
-        <div class="detail_product">
-          <span class="title_detail_product"> Stock: </span>
-          <input
-              v-if="!isView"
-              :value="product.stock"
-              @input="handleStockInput"
-              inputmode="numeric"
-              class="input input_detail"
-              placeholder="Stock"
-              maxlength="4"
-          />
-          <span v-else>{{ product?.stock + 'u.' }}</span>
+        <div class="detail_product" :style="{ alignItems: !isView ? 'start' : '' }">
+          <span
+              class="title_detail_product"
+              :style="{ marginTop: !isView ? '21px' : '' }"
+          >
+            Colores:
+          </span>
+          <div v-if="!isView" class="color-picker-container">
+            <div style="display: flex; align-items: center; justify-content: space-between">
+              <div style="display: flex; align-items: center;">
+                <span class="text-color">Color personalizado:</span>
+                <input
+                    type="color"
+                    v-model="newColor"
+                    :disabled="product.colores?.length >= 3"
+                    class="color-input"
+                    placeholder="Selecciona un color"
+                />
+              </div>
+              <button @click="addColor" :disabled="product.colores?.length >= 3" class="btn-outline">Agregar</button>
+            </div>
+
+            <ColorList
+                v-model:data="product.colores"
+                @update:data="handleColorSelect"
+            />
+
+            <div class="color-chips">
+              <div
+                  v-for="(color, index) in product.colores"
+                  :key="index"
+                  class="color-chip"
+                  :style="{ backgroundColor: color }"
+              >
+
+
+                <button @click="removeColor(index)">✕</button>
+              </div>
+            </div>
+          </div>
+          <div v-else>
+            <span v-if="product.colores.length === 0">No se agregaron colores</span>
+            <div v-else class="color-chips">
+              <div
+                  v-for="(color, index) in product.colores"
+                  :key="index"
+                  class="color-chip"
+                  :style="{ backgroundColor: color }"
+              >
+              </div>
+            </div>
+          </div>
         </div>
         <div v-if="isView" class="line"></div>
         <div class="detail_product">
@@ -589,7 +641,7 @@ button {
 }
 
 .title_detail_product{
-  min-width: 60px;
+  min-width: 65px;
   font-weight: 600;
 }
 
@@ -603,6 +655,65 @@ button {
 .line-end{
   display: none;
 }
+
+.color-picker-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 10px;
+}
+
+.text-color{
+  font-size: 14px;
+  margin-right: 5px
+}
+
+.color-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.color-chip {
+  width: 60px;
+  height: 25px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5px;
+  color: #fff;
+  border: 1px solid rgba(21, 20, 20, 0.7) !important;
+  font-size: 0.8rem;
+  font-weight: bold;
+  position: relative;
+  margin: 5px 0;
+}
+
+.color-chip button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.color-input {
+  width: 45px;
+  height: 45px;
+  padding: 0;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  background: transparent;
+}
+
+.color-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 @media (max-width: 1050px) {
   .form-container {
     width: 90%;
@@ -651,6 +762,9 @@ button {
   }
   .line-end{
     display: block;
+  }
+  .text-color{
+    width: 90px;
   }
 }
 </style>

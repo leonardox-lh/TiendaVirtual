@@ -19,12 +19,27 @@ const iconColorByType = {
 </script>
 
 <template>
-  <div v-if="toast.visible" :class="['toast', toast.type]" style="display: flex; align-items: center; justify-content: center">
-    <Icon
-        :icon="iconByType[toast.type]"
-        :style="{ fontSize: '20px', color: iconColorByType[toast.type], marginRight: '10px' }"
-    />
-    <div class="toast-message">{{ toast.message }}</div>
+  <div
+      v-if="toast.visible"
+      :class="['toast', toast.type]"
+      style="display: flex; align-items: center; justify-content: space-between"
+  >
+    <div style="display: flex; align-items: center;">
+      <Icon
+          :icon="iconByType[toast.type]"
+          :style="{ fontSize: '20px', color: iconColorByType[toast.type], marginRight: '10px' }"
+      />
+      <div class="toast-message">{{ toast.message }}</div>
+    </div>
+
+    <button class="toast-close" @click="toast.close">
+      <Icon
+          icon="mdi:close"
+          width="20"
+          height="20"
+          :style="{ color: iconColorByType[toast.type] }"
+      />
+    </button>
   </div>
 </template>
 
@@ -37,14 +52,15 @@ const iconColorByType = {
   z-index: 9999;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 0.75rem 1.5rem;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
   border-radius: 6px;
   color: black;
   box-shadow: 0 0 10px rgba(0,0,0,0.2);
   font-weight: 600;
   animation: slide-in 0.3s ease-out;
-  min-width: 220px;
+  min-width: 240px;
+  max-width: 300px;
 }
 
 .toast.success {
@@ -62,6 +78,15 @@ const iconColorByType = {
   border-left: 10px solid #ee3f2e;
 }
 
+.toast-close {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+}
 
 @keyframes slide-in {
   from {
@@ -74,3 +99,4 @@ const iconColorByType = {
   }
 }
 </style>
+
