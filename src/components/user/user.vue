@@ -130,6 +130,29 @@ const guardarEmpresa = async () => {
     loading.value = false
   }
 }
+
+const deleteTypes = async (id) => {
+  const confirmar = confirm('¿Estás seguro de eliminar este tipo?')
+  if (!confirmar) return
+  try {
+    loading.value = true
+    const error = await store.eliminarTipo(id)
+    if (error) {
+      if (error.code === '23503') {
+        toast.error('Hay productos registrados con este tipo')
+      } else {
+        toast.error('Error al eliminar tipo')
+      }
+    } else {
+      toast.success('Tipo eliminado correctamente')
+    }
+  } catch (error) {
+    console.error('Error al eliminar tipo:', error)
+    toast.error('Error al eliminar tipo')
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 
 
@@ -194,7 +217,12 @@ const guardarEmpresa = async () => {
           </thead>
           <tbody>
           <tr v-for="tipo in store.tipos" :key="tipo.id" style="border-bottom: 1px solid #eee;">
-            <td>{{ tipo.nombre }}</td>
+            <td style="padding: 5px 0">{{ tipo.nombre }}</td>
+            <td style="display: flex; align-items: center; justify-content: end; padding: 5px 0; text-align: right; margin: 2px 0">
+              <button @click="deleteTypes(tipo.id)" class="btn-outline">
+                <Icon icon="mdi:delete-outline" />
+              </button>
+            </td>
           </tr>
           </tbody>
         </table>
@@ -233,7 +261,7 @@ const guardarEmpresa = async () => {
 }
 
 .card_types{
-  width: 300px;
+  width: 400px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -278,6 +306,10 @@ const guardarEmpresa = async () => {
 
   .btn-logout{
     margin-bottom: 60px;
+  }
+
+  .card_types{
+    width: 86%;
   }
 }
 </style>

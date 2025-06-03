@@ -49,6 +49,19 @@ export const useUserStore = defineStore('empresa', {
             }
 
             return error
+        },
+
+        async eliminarTipo(id) {
+            const { error } = await supabase
+                .from('tipos')
+                .delete()
+                .eq('id', id)
+
+            if (!error) {
+                this.tipos = this.tipos.filter(tipo => tipo.id !== id)
+            }
+
+            return error
         }
     }
 })
