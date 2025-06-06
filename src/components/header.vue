@@ -5,11 +5,13 @@ import { useAuthStore } from '../stores/authStore'
 import { Icon } from '@iconify/vue'
 import {router} from "../router.js";
 import {useRoute} from "vue-router";
+import {useCartStore} from "../stores/cartStore.js";
 
 const route = useRoute()
 const auth = useAuthStore()
 const empresa = ref(null)
 const menuOpen = ref(false)
+const cart = useCartStore()
 
 onMounted(async () => {
   const { data, error } = await supabase
@@ -67,8 +69,13 @@ const toggleMenu = () => {
       <Icon icon="mdi:whatsapp" />
       <div style="margin: 0 5px">WhatsApp</div>
     </a>
-    <button v-if="route.path !== '/car-shop'" class="btn-outline car-shop" @click="router.push({path: '/car-shop'})">
+    <button
+        v-if="route.path !== '/car-shop'"
+        class="btn-outline car-shop"
+        @click="router.push({path: '/car-shop'})"
+    >
       <Icon icon="mdi:cart-outline" />
+      <span v-if="cart.totalItems > 0" class="badge">{{ cart.totalItems }}</span>
     </button>
   </header>
 </template>
@@ -147,6 +154,18 @@ nav,
   width: 50px;
   height: 50px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.badge {
+  position: absolute;
+  top: -10px;
+  right: -6px;
+  background-color: var(--color-primary) !important;
+  color: white;
+  font-size: 15px;
+  padding: 2px 8px;
+  border-radius: 50%;
+  font-weight: bold;
 }
 
 @media (max-width: 1000px) {
