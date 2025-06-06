@@ -62,6 +62,22 @@ export const useUserStore = defineStore('empresa', {
             }
 
             return error
+        },
+
+        async actualizarTipo(id, nombre) {
+            const { error } = await supabase
+                .from('tipos')
+                .update({ nombre })
+                .eq('id', id)
+
+            if (!error) {
+                const tipoIndex = this.tipos.findIndex(tipo => tipo.id === id)
+                if (tipoIndex !== -1) {
+                    this.tipos[tipoIndex].nombre = nombre
+                }
+            }
+
+            return error
         }
     }
 })

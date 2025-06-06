@@ -1,12 +1,13 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
-import { supabase } from '../../../supabase.js'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../../../stores/userStore.js'
 import { useAuthStore } from '../../../stores/authStore.js'
 import Card from "../detail/card.vue";
 import LoadingPage from "../../loadingPage.vue";
 import {useToastStore} from "../../../stores/toast.js";
+import {productService} from '../../../services/productService.js'
+
 
 const toast = useToastStore()
 const auth = useAuthStore()
@@ -19,24 +20,12 @@ const search = ref('')
 const loading = ref(true)
 
 const getData = async () => {
-  loading.value = true
-  let query = supabase
-      .from('productos')
-      .select('*, tipos(nombre), imagenes_producto!fk_producto(id, url_imagen)\n')
-      .order('created_at', { ascending: false })
-
-  if (typeSelect.value) {
-    query = query.eq('tipo_id', typeSelect.value)
+  try {
+    product.value = await productService.fetchProducts({ tipoId: typeSelect.value })
+  } catch (error) {
+  } finally {
+    loading.value = false
   }
-
-  const { data, error } = await query
-  if (error) {
-    console.error('Error al cargar productos:', error)
-  } else {
-    product.value = data
-  }
-
-  loading.value = false
 }
 
 const productsFilter = computed(() => {
@@ -48,13 +37,14 @@ const productsFilter = computed(() => {
 const deleteProduct = async (id) => {
   const confirmar = confirm('¿Estás seguro de eliminar este producto?')
   if (!confirmar) return
-  await supabase.from('imagenes_producto').delete().eq('producto_id', id)
 
-  const { error } = await supabase.from('productos').delete().eq('id', id)
-  if (error) {
-    toast.error('Error al eliminar: ' + error.message)
-  } else {
+  try {
+    await productService.deleteProductoById(id)
     product.value = product.value.filter(p => p.id !== id)
+    toast.success('Producto eliminado')
+  } catch (err) {
+    toast.error('Error al eliminar el producto')
+    console.error('Error al eliminar el producto:', err)
   }
 }
 
@@ -161,17 +151,7 @@ watch(typeSelect, async () => {
   transition: transform 0.2s;
   box-shadow: 0 2px 5px rgba(59, 59, 59, 0.2);
 }
-.imagenes-miniatura img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-.imagenes-miniatura img:hover {
-  transform: scale(1.1);
-}
+
 .btnProduct{
   width: 220px;
   display: flex;

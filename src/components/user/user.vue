@@ -153,6 +153,20 @@ const deleteTypes = async (id) => {
     loading.value = false
   }
 }
+
+const updateType = (id, nombre) => {
+  const nuevoNombre = prompt('Ingrese el nuevo nombre del tipo:', nombre)
+  if (nuevoNombre && nuevoNombre.trim() !== '') {
+    store.actualizarTipo(id, nuevoNombre.trim())
+      .then(() => {
+        toast.success('Tipo actualizado correctamente')
+      })
+      .catch((error) => {
+        console.error('Error al actualizar tipo:', error)
+        toast.error('Error al actualizar tipo')
+      })
+  }
+}
 </script>
 
 
@@ -160,15 +174,15 @@ const deleteTypes = async (id) => {
   <section>
     <div class="cont-detail">
       <div class="card">
-        <h2>Configuración</h2>
+        <h2 style="margin: 10px 0">Configuración</h2>
 
         <div style="display: flex; align-items: center; justify-content: center">
 
-          <div v-if="items.logo_url || logoUrl" style="margin: 20px">
+          <div v-if="items.logo_url || logoUrl" style="padding: 10px; box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);">
             <img :src="items.logo_url || logoUrl" alt="Logo" width="150" />
           </div>
           <div style="display: inline-block; margin: 25px" >
-            <label class="btn">
+            <label class="btn btn-outline">
               <Icon icon="mdi:upload" />
               Subir logo
               <input type="file" @change="handleLogoChange" hidden />
@@ -205,28 +219,31 @@ const deleteTypes = async (id) => {
           />
         </div>
 
-        <button class="btn_save" @click="guardarEmpresa">Guardar</button>
+        <button class="btn_save" style="margin-bottom: 10px" @click="guardarEmpresa">Guardar</button>
       </div>
       <div class="card_types">
-        <h2>Tipos registrados</h2>
-        <table style="width: 100%; border-collapse: collapse;">
-          <thead>
-          <tr style="text-align: left; border-bottom: 1px solid #ccc;">
-            <th>Nombre</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="tipo in store.tipos" :key="tipo.id" style="border-bottom: 1px solid #eee;">
-            <td style="padding: 5px 0">{{ tipo.nombre }}</td>
-            <td style="display: flex; align-items: center; justify-content: end; padding: 5px 0; text-align: right; margin: 2px 0">
-              <button @click="deleteTypes(tipo.id)" class="btn-outline">
-                <Icon icon="mdi:delete-outline" />
-              </button>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-
+        <div class="table-scroll">
+          <table style="width: 100%">
+            <thead>
+            <tr style="text-align: left; border-bottom: 1px solid #ccc;">
+              <th colspan="3">Categoría registradas</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="tipo in store.tipos" :key="tipo.id" style="border-bottom: 1px solid #eee;">
+              <td style="padding-left: 10px">{{ tipo.nombre }}</td>
+              <td style="display: flex; align-items: center; justify-content: end; text-align: right; margin: 2px 0">
+                <button @click="updateType(tipo.id, tipo.nombre)" class="btn-outline" style="padding: 6px !important;">
+                  <Icon icon="mdi:pencil" />
+                </button>
+                <button @click="deleteTypes(tipo.id)" class="btn-outline" style="padding: 6px !important;">
+                  <Icon icon="mdi:delete-outline" />
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
         <div style=" margin-bottom: 1rem; display: flex; gap: 0.5rem;">
           <input
               type="text"
@@ -236,7 +253,7 @@ const deleteTypes = async (id) => {
           />
           <button @click="agregarTipo">Agregar</button>
         </div>
-        <button class="btn-logout" v-if="auth.user" @click="logout">Cerrar sesión</button>
+        <button class="btn-error" v-if="auth.user" @click="logout">Cerrar sesión</button>
 
       </div>
 
@@ -253,14 +270,18 @@ const deleteTypes = async (id) => {
 }
 
 .card {
+  margin-top: 20px;
   width: 400px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   padding: 0 30px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 .card_types{
+  margin-top: 20px;
   width: 400px;
   display: flex;
   flex-direction: column;
@@ -278,14 +299,6 @@ const deleteTypes = async (id) => {
   margin: 0 auto;
 }
 
-.btn-logout{
-  background-color: var(--color-error);
-}
-
-.btn-logout:hover {
-  background-color: #ff3b3b;
-}
-
 .btn{
   display: flex;
   align-items: center;
@@ -293,6 +306,21 @@ const deleteTypes = async (id) => {
   width: 80px;
 }
 
+.table-scroll thead th {
+  position: sticky;
+  width: 100%;
+  top: 0;
+  background-color: var(--color-header);
+  z-index: 1;
+  padding: 10px;
+}
+
+.table-scroll {
+  max-height: 400px;
+  overflow-y: auto;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
 @media (max-width: 1050px) {
   .cont-detail{
     flex-direction: column;
@@ -301,15 +329,11 @@ const deleteTypes = async (id) => {
 
   .card {
     width: 85%;
-    padding: 0;
-  }
-
-  .btn-logout{
-    margin-bottom: 60px;
+    padding: 15px;
   }
 
   .card_types{
-    width: 86%;
+    width: 94%;
   }
 }
 </style>

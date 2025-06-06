@@ -5,11 +5,13 @@ import DetailProduct from "./components/product/detail/detailProduct.vue";
 import User from './components/user/user.vue'
 import Access from "./components/login/access.vue"
 import { useAuthStore } from './stores/authStore'
-import { pinia } from './main.js' //
+import { pinia } from './main.js'
+import CarShop from "./components/shop/carShop.vue"; //
 
 const routes = [
     { path: '/list', component: ListarProductos },
     { path: '/login', component: Access },
+    { path: '/car-shop', component: CarShop},
     {
         path: '/add',
         component: DetailProduct,

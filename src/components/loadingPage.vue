@@ -13,10 +13,6 @@ const props = defineProps({
     default: false
   }
 })
-
-watch(() => props.visible, (val) => {
-  console.log("Loading state changed:", val);
-}, { immediate: true });
 </script>
 
 <style scoped>

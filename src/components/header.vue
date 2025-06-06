@@ -3,7 +3,10 @@ import { ref, onMounted } from 'vue'
 import { supabase } from '../supabase'
 import { useAuthStore } from '../stores/authStore'
 import { Icon } from '@iconify/vue'
+import {router} from "../router.js";
+import {useRoute} from "vue-router";
 
+const route = useRoute()
 const auth = useAuthStore()
 const empresa = ref(null)
 const menuOpen = ref(false)
@@ -64,6 +67,9 @@ const toggleMenu = () => {
       <Icon icon="mdi:whatsapp" />
       <div style="margin: 0 5px">WhatsApp</div>
     </a>
+    <button v-if="route.path !== '/car-shop'" class="btn-outline car-shop" @click="router.push({path: '/car-shop'})">
+      <Icon icon="mdi:cart-outline" />
+    </button>
   </header>
 </template>
 
@@ -129,6 +135,20 @@ nav,
   font-weight: bold;
 }
 
+.car-shop {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  background-color: var(--color-backgronund) !important;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 30px;
+  width: 50px;
+  height: 50px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
 @media (max-width: 1000px) {
   .nav-desktop {
     display: none;
@@ -140,11 +160,7 @@ nav,
   }
 
   .whatsapp {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 9999;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    display: none;
   }
 }
 </style>

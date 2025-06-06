@@ -7,6 +7,10 @@ import {useToastStore} from "../../../stores/toast.js";
 import LoadingPage from "../../loadingPage.vue";
 import { validatePrecio, validateStock } from '../../../validators/validatorInput.js'
 import ColorList from "../../colorList.vue";
+import AddModal from "../../shop/modals/addModal.vue";
+import {productService} from '../../../services/productService.js'
+import {useCartStore} from "../../../stores/cartStore.js";
+
 
 const newColor = ref('#000000')
 const router = useRouter()
@@ -23,6 +27,11 @@ const productDefault = ref({
   tipo_id: null,
   imagenes_producto: [],
 })
+
+const selectedProduct = ref(null)
+const showModal = ref(false)
+const quantity = ref(1)
+const cart = useCartStore()
 
 const product = ref({
   id: null,
@@ -60,6 +69,24 @@ const handlePrecioInput = (e) => {
   } else {
     e.target.value = product.value.precio ?? ''
   }
+}
+
+const addToCart = () => {
+
+  const data = {
+    ...product.value,
+    image: previewUrls.value[0] ? previewUrls.value[0] : '/assets/articleDefault.png',
+  }
+  cart.addItem( data, quantity.value )
+  toast.success('Producto agregado al carrito')
+}
+
+const removeQuantity = () => {
+  quantity.value--
+}
+
+const addQuantity = () => {
+  quantity.value++
 }
 
 const addColor = () => {
@@ -140,84 +167,61 @@ const uploadImagesToCloudinary = async () => {
   return urls
 }
 
-const registrarProducto = async () => {
+const validateData = () => {
   if (!product.value.tipo_id) {
     toast.warning('Por favor selecciona un tipo.')
-    return
+    return false
   }
   if (!product.value.nombre || !product.value.descripcion || product.value.precio == null) {
     toast.warning('Por favor completa todos los campos.')
-    return
+    return false
   }
   if (product.value.precio < 0 || product.value.stock < 0) {
     toast.warning('El precio y el stock deben ser mayores o iguales a 0.')
-    return
+    return false
   }
+  return true
+}
 
+const registerProduct = async () => {
+  if (!validateData()) return
   try {
     loading.value = true
-    if (selectedFiles.value && selectedFiles.value.length > 0) {
-      newImageUrls.value = await uploadImagesToCloudinary()
-    }
+    const productoId = await productService.createProducto(product.value)
+    await postImages(productoId)
+    toast.success('Producto registrado')
+    await router.push({path: '/list'})
 
-    const productoId = route.params.id
-
-    if (isEdit.value) {
-      const { error } = await supabase
-          .from('productos')
-          .update({
-            nombre: product.value.nombre,
-            descripcion: product.value.descripcion,
-            precio: product.value.precio,
-            colores: product.value.colores,
-            tipo_id: product.value.tipo_id,
-          })
-          .eq('id', productoId)
-
-      if (error) {
-        toast.error('Error al actualizar el producto')
-        return
-      }
-
-      await postImages(productoId)
-
-      toast.success('Producto actualizado')
-      emit('update:Product')
-    } else {
-      // Insertar el producto
-      const { data, error } = await supabase
-          .from('productos')
-          .insert([{
-            nombre: product.value.nombre,
-            descripcion: product.value.descripcion,
-            precio: product.value.precio,
-            colores: product.value.colores.length > 0 ? product.value.colores : [],
-            tipo_id: product.value.tipo_id,
-          }])
-          .select()
-          .single()
-
-      if (error) {
-        console.error('Error al registrar el producto:', error.message)
-        toast.error('Error al registrar el producto')
-        return
-      }
-
-      // Insertar imágenes relacionadas
-      await postImages(data.id)
-
-      toast.success('Producto registrado')
-      await router.push({path: '/list'})
-    }
   } catch (err) {
-    toast.error('Error al registrar el producto')
-    console.error('Error al registrar el producto:', err)
+    toast.error('Error al crear producto')
+    console.error('Error al crear producto:', err)
+  } finally {
+    loading.value = false
+  }
+}
+
+const updateProduct = async () => {
+  if (!validateData()) return
+  try {
+    loading.value = true
+    await productService.updateProducto(route.params.id, product.value)
+    await postImages(route.params.id)
+
+    toast.success('Producto actualizado')
+    emit('update:Product')
+  } catch (err) {
+    toast.error('Error al actualizar producto')
+    console.error('Error al actualizar el producto:', err)
   } finally {
     loading.value = false
   }
 }
 
 const postImages = async (productoId) => {
+  if (selectedFiles.value && selectedFiles.value.length > 0) {
+    newImageUrls.value = await uploadImagesToCloudinary()
+  }
+
   if (newImageUrls.value.length > 0) {
     const imagenes = newImageUrls.value.map((url) => ({
       producto_id: productoId,
@@ -245,7 +249,6 @@ const removePreviewImage = (index, url) => {
     // Si es un blob, no necesitamos hacer nada más
     selectedFiles.value.splice(index-imageUrls.value.length, 1)
     previewUrls.value.splice(index, 1)
-    return
   }
   else {
     removeUploadedImage(url, index)
@@ -354,7 +357,7 @@ watch(() => props.isAdd, (newVal) => {
                 :key="index"
                 style="position: relative"
             >
-              <div class="mini-images">
+              <div class="image-default">
                 <img :src="url" alt="preview"/>
                 <button v-if="!isView" @click="removePreviewImage(index, url)">
                   <Icon icon="mdi:trash"/>
@@ -367,7 +370,19 @@ watch(() => props.isAdd, (newVal) => {
 
       </div>
     </div>
-
+    <div v-if="isView" style="display: flex; align-items: center">
+      <button style="margin-right: 30px" class="btn-outline" @click="addToCart">
+        <Icon icon="mdi:cart-plus" />
+            Agregar al carrito
+      </button>
+      <button class="btn-outline mini-button" @click="removeQuantity" :disabled="quantity <= 1">
+        <Icon icon="mdi:minus" />
+      </button>
+      <div style="min-width: 25px; text-align: center">{{ quantity }}</div>
+      <button class="btn-outline mini-button" @click="addQuantity">
+        <Icon icon="mdi:add" />
+      </button>
+    </div>
 <!--  Detail  -->
 
     <h3 style="margin: 0 10px">Detalle</h3>
@@ -481,11 +496,21 @@ watch(() => props.isAdd, (newVal) => {
 
     </div>
     <div v-if="!isView" style="margin: 0 auto 30px auto">
-      <button @click="registrarProducto">
-        {{ isEdit ? 'Guardar cambios' : 'Registrar producto' }}
+      <button v-if="isEdit" @click="updateProduct">
+        Guardar cambios
+      </button>
+      <button v-else @click="registerProduct">
+        Registrar producto
       </button>
     </div>
+
+
     <LoadingPage v-model:visible="loading" />
+    <AddModal
+        :product="selectedProduct"
+        :visible="showModal"
+        @close="showModal = false"
+    />
   </div>
 </template>
 
@@ -534,33 +559,6 @@ button {
   gap: 1rem;
   flex-wrap: wrap;
   width: 90%;
-}
-
-.mini-images{
-  position: relative;
-  width: 172px;
-  height: 150px;
-  overflow: hidden;
-}
-
-.mini-images img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.mini-images button {
-  width: 35px;
-  height: 35px;
-  position: absolute;
-  top: 0;
-  right: 0;
-  border-radius: 5px ;
-  cursor: pointer;
-  padding: 0 !important;
-  background: var(--color-error-background) !important;
-  border: var(--color-error) 3px solid;
-  margin: 3px;
 }
 
 .carousel-container {
@@ -755,10 +753,6 @@ button {
   .cont-mini-image{
     width: 100%;
     margin: 30px auto;
-  }
-  .mini-images{
-    width: 152px;
-    height: 130px;
   }
   .line-end{
     display: block;
